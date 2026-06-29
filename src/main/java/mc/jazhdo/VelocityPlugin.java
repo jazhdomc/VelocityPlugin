@@ -52,7 +52,7 @@ public class VelocityPlugin {
         // Register easy transfer commands
         CommandManager cm = server.getCommandManager();
         List<String> cmds = List.of(
-            "lobby", "leave", "hub",
+            "lobby", "base", "hub",
             "oneblock", "island", "ob",
             "creative", "create", "build",
             "survival", "live", "1.12",
