@@ -53,7 +53,7 @@ public class VelocityPlugin {
         CommandManager cm = server.getCommandManager();
         List<String> cmds = List.of(
             "lobby", "base", "hub",
-            "oneblock", "island", "ob",
+            "1block", "island", "oneb",
             "creative", "create", "build",
             "survival", "live", "1.12",
             "events", "games", "fun",
@@ -65,7 +65,7 @@ public class VelocityPlugin {
             "discord", "dc",
             "website", "www", "web", "site"
         );
-        List<String> links = List.of("Discord", "Website", "https://discord.gg/X6Ab2B35n4", "https://jazhdomc.github.io");
+        List<String> links = List.of("Discord", "Website", "https://discord.gg/X6Ab2B35n4", "https://mc.itsjaz.com");
         for (int i = 0; i < cmds.size(); i++) {
             int type = ((i > 1) ? 1 : 0);
             cm.register(cm.metaBuilder(cmds.get(i)).build(), new MessageCommand("JazhdoMC's Official ".concat(links.get(type)), links.get(type + 2)));
