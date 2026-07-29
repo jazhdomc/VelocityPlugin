@@ -21,8 +21,9 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
-@Plugin(id = "velocity_plugin", name = "VelocityPlugin", version = "0.1.2")
+@Plugin(id = "velocity_plugin", name = "VelocityPlugin", version = "0.1.3")
 public class VelocityPlugin {
     private final ProxyServer server;
 
@@ -35,15 +36,15 @@ public class VelocityPlugin {
     public void onPlayerJoin(ServerConnectedEvent event) {
         Optional<RegisteredServer> previousServer = event.getPreviousServer();
         String username = event.getPlayer().getUsername();
-        for (Player player : event.getServer().getPlayersConnected()) player.sendMessage(Component.text((previousServer.isPresent() ? previousServer.get().getServerInfo().getName() : "Server List") + " -> " + username));
-        if (previousServer.isPresent()) for (Player player : previousServer.get().getPlayersConnected()) player.sendMessage(Component.text(username + " -> " + event.getServer().getServerInfo().getName()));
+        for (Player player : event.getServer().getPlayersConnected()) player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>" + (previousServer.isPresent() ? previousServer.get().getServerInfo().getName() : "Server List") + " -> " + username));
+        if (previousServer.isPresent()) for (Player player : previousServer.get().getPlayersConnected()) player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>" + username + " -> " + event.getServer().getServerInfo().getName()));
     }
 
     @Subscribe
     public void onPlayerLeave(DisconnectEvent event) {
         Player player = event.getPlayer();
         player.getCurrentServer().ifPresent(serverConnection -> {
-            for (Player p : serverConnection.getServer().getPlayersConnected()) p.sendMessage(Component.text(player.getUsername() + " -> Server List"));
+            for (Player p : serverConnection.getServer().getPlayersConnected()) p.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>" + player.getUsername() + " -> Server List"));
         });
     }
 
