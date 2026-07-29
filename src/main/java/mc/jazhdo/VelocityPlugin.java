@@ -22,7 +22,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
-@Plugin(id = "velocity_plugin", name = "VelocityPlugin", version = "0.0.1")
+@Plugin(id = "velocity_plugin", name = "VelocityPlugin", version = "0.1.2")
 public class VelocityPlugin {
     private final ProxyServer server;
 
@@ -34,16 +34,16 @@ public class VelocityPlugin {
     @Subscribe
     public void onPlayerJoin(ServerConnectedEvent event) {
         Optional<RegisteredServer> previousServer = event.getPreviousServer();
-        net.kyori.adventure.text.TextComponent msg = Component.text(previousServer.map(connection -> connection.getServerInfo().getName()).orElse("Server List").concat(" -> ").concat(event.getPlayer().getUsername()));
-        for (Player player : event.getServer().getPlayersConnected()) player.sendMessage(msg);
+        String username = event.getPlayer().getUsername();
+        for (Player player : event.getServer().getPlayersConnected()) player.sendMessage(Component.text((previousServer.isPresent() ? previousServer.get().getServerInfo().getName() : "Server List") + " -> " + username));
+        if (previousServer.isPresent()) for (Player player : previousServer.get().getPlayersConnected()) player.sendMessage(Component.text(username + " -> " + event.getServer().getServerInfo().getName()));
     }
 
     @Subscribe
     public void onPlayerLeave(DisconnectEvent event) {
         Player player = event.getPlayer();
-        player.getCurrentServer().ifPresent(oldServer -> {
-            net.kyori.adventure.text.TextComponent msg = Component.text(player.getUsername().concat(" -> ").concat(oldServer.getServerInfo().getName()));
-            for (Player p : oldServer.getServer().getPlayersConnected()) p.sendMessage(msg);
+        player.getCurrentServer().ifPresent(serverConnection -> {
+            for (Player p : serverConnection.getServer().getPlayersConnected()) p.sendMessage(Component.text(player.getUsername() + " -> Server List"));
         });
     }
 
@@ -53,7 +53,7 @@ public class VelocityPlugin {
         CommandManager cm = server.getCommandManager();
         List<String> cmds = List.of(
             "lobby", "base", "hub",
-            "1block", "island", "oneb",
+            "1block", "island", "one",
             "creative", "create", "build",
             "survival", "live", "1.12",
             "events", "games", "fun",
@@ -68,7 +68,7 @@ public class VelocityPlugin {
         List<String> links = List.of("Discord", "Website", "https://discord.gg/X6Ab2B35n4", "https://mc.itsjaz.com");
         for (int i = 0; i < cmds.size(); i++) {
             int type = ((i > 1) ? 1 : 0);
-            cm.register(cm.metaBuilder(cmds.get(i)).build(), new MessageCommand("JazhdoMC's Official ".concat(links.get(type)), links.get(type + 2)));
+            cm.register(cm.metaBuilder(cmds.get(i)).build(), new MessageCommand("JazhdoMC's Official " + links.get(type), links.get(type + 2)));
         }
     }
     
@@ -98,7 +98,7 @@ public class VelocityPlugin {
             }
 
             player.createConnectionRequest(target.get()).fireAndForget();
-            player.sendMessage(Component.text("Sending you to " + serverName + "..."));
+            player.sendMessage(Component.text("Sending you to " + serverName + " server..."));
         }
     }
 
